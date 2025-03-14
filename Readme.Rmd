@@ -16,9 +16,11 @@ knitr::opts_chunk$set(
 
 
 
-# Paquete para acceder a los datos del Banco Central de la República Argentina (BCRA)
+# Datos del Banco Central de la República Argentina (BCRA)
 
-** NO OFICIAL: el paquete no es un producto oficial de la entidad **
+<br>
+
+**NO OFICIAL: el paquete no es un producto oficial de la entidad**
 
 ## Descripción
 
@@ -62,7 +64,7 @@ tasas <- get_datasets(
   pattern = 'tasa' # Patrón de búsqueda
   ) # Por defecto, se muestran todas las series de esta API
 
-tasas
+head(tasas)
 ```
 
 Ejemplo de consulta de las series de _tasa de política monetaria_ y _tasa de préstamos personales_ desde enero 2024 hasta la actualidad
