@@ -1,0 +1,100 @@
+---
+output: github_document
+---
+
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+
+
+# Paquete para acceder a los datos del Banco Central de la República Argentina (BCRA)
+
+** NO OFICIAL: el paquete no es un producto oficial de la entidad **
+
+## Descripción
+
+Este paquete permite acceder a algunos de los datos publicados por el Banco Central de la República Argentina (BCRA) y trabajar con ellos en el entorno de R. 
+
+Al momento se pueden consultar los datos de la API Principales Variables (https://www.bcra.gob.ar/BCRAyVos/catalogo-de-APIs-banco-central.asp) y del informe mensual de la volución del Mercado de Cambios y Balance Cambiario (https://www.bcra.gob.ar/PublicacionesEstadisticas/Mercado_de_cambios.asp)
+
+
+Algunas de sus funciones son:
+
+- **`get_dataset()`**: Consulta las series disponibles en la API,
+
+- **`get_bcra()`**: Obtiene las series desaeadas con un período de tiempo elegido, en formato dataframe
+
+- **`get_mercado_cambios()`**: Obtiene los datos del Informe mensual de la volución del Mercado de Cambios y Balance Cambiario 
+
+
+
+
+## Instalación
+
+Para instalar el paquete, correr el siguiente código
+```{r, eval = FALSE}
+# install.packages('devtools')
+# si no tiene instalado devtools
+
+devtools::install_github("jurricariet/bcraR")
+```
+
+## Modo de uso
+
+Ejemplo de consulta a los datos de la API, para obtener los códigos de las variables.
+
+```{r}
+# Cargo la libreria
+library(bcraR)
+
+# Consulta de series relacionadas con las tasas de interés
+
+tasas <- get_datasets(
+  pattern = 'tasa' # Patrón de búsqueda
+  ) # Por defecto, se muestran todas las series de esta API
+
+tasas
+```
+
+Ejemplo de consulta de las series de _tasa de política monetaria_ y _tasa de préstamos personales_ desde enero 2024 hasta la actualidad
+
+```{r}
+
+
+data <- get_bcra(id_vars = c(6,14),
+                 start_date = '2024-01-01',
+                 end_date = Sys.Date())
+
+head(data)
+```
+
+Gráfico:
+
+```{r}
+library(tidyverse)
+
+data %>% 
+  left_join(tasas %>% select(id_variable,descripcion),
+            by=c('idVariable'='id_variable')) %>% # Tomo el nombre de la variable de la tabla de series disponibles
+  ggplot(aes(x=fecha, y=valor, color=descripcion)) +
+  geom_line() +
+  theme(legend.position = 'top') 
+```
+
+
+
+
+
+
+
+
+
