@@ -81,7 +81,7 @@ head(data)
 
 Gráfico:
 
-```{r}
+```{r plot, message=FALSE, warning=FALSE}
 library(tidyverse)
 
 data %>% 
