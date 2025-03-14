@@ -19,7 +19,7 @@ Cambiario
 
 Algunas de sus funciones son:
 
-- **`get_dataset()`**: Consulta las series disponibles en la API,
+- **`get_datasets()`**: Consulta las series disponibles en la API
 
 - **`get_bcra()`**: Obtiene las series desaeadas con un período de
   tiempo elegido, en formato dataframe
