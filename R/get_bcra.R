@@ -41,7 +41,7 @@ get_bcra <- function(id_vars, start_date = "2024-01-01", end_date = "2025-12-31"
       current_end <- min(current_start + lubridate::days(max_records), final_end)
 
       # Crear la URL para la consulta a la API
-      url <- paste0('https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias/',
+      url <- paste0('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/',
                     id_variable,
                     '?desde=', format(current_start, "%Y-%m-%d"),
                     '&hasta=', format(current_end, "%Y-%m-%d"))
@@ -57,11 +57,12 @@ get_bcra <- function(id_vars, start_date = "2024-01-01", end_date = "2025-12-31"
 
         # Verificar si hay resultados
         if (length(parsed_content$results) > 0) {
-          results <- as.data.frame(parsed_content$results, stringsAsFactors = FALSE)
+          results <- as.data.frame(parsed_content$results$detalle, stringsAsFactors = FALSE)
 
           # Convertir fecha a Date y valor a numeric
           results$fecha <- as.Date(results$fecha)
           results$valor <- as.numeric(as.character(results$valor))
+          results$id_variable <- parsed_content$results$idVariable
 
           # Agregar resultados al dataframe
           all_results <- rbind(all_results, results)

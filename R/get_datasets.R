@@ -16,11 +16,12 @@
 #' @export
 
 get_datasets <- function(pattern=NULL) {
-  get <- httr::GET('https://api.bcra.gob.ar/estadisticas/v3.0/Monetarias')
+  get <- httr::GET('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias')
   text <- rawToChar(get$content)
   Encoding(text) <- "UTF-8"
-  lista_variables <- as.data.frame(jsonlite::fromJSON(text))
-  names(lista_variables) <- c('status','id_variable','descripcion','categoria',
+  lista_variables <- as.data.frame(jsonlite::fromJSON(text))[,c(1,5:14)]
+  names(lista_variables) <- c('status','id_variable','descripcion','categoria','tipo_serie',
+                              'periodicidad','unidad','moneda','primera_fecha',
                               'fecha','valor')
   if(!is.null(pattern)){
     lista_variables <- lista_variables[grep(pattern, lista_variables$descripcion, ignore.case = TRUE),]
