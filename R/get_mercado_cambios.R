@@ -14,7 +14,7 @@
 
 get_mercado_cambios <- function() {
   # URL del archivo
-  url1 <- 'https://www.bcra.gob.ar/Pdfs/PublicacionesEstadisticas/Nuevo-anexo-MC.xlsm'
+  url1 <- 'https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/Nuevo-anexo-MC.xlsx'
 
   # Crear archivo temporal con extensión correcta
   tf <- tempfile(fileext = ".xlsm")
