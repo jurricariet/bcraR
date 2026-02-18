@@ -16,17 +16,34 @@
 #' @export
 
 get_datasets <- function(pattern=NULL) {
-  get <- httr::GET('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias')
-  text <- rawToChar(get$content)
-  Encoding(text) <- "UTF-8"
-  lista_variables <- as.data.frame(jsonlite::fromJSON(text))[,c(1,5:14)]
-  names(lista_variables) <- c('status','id_variable','descripcion','categoria','tipo_serie',
-                              'periodicidad','unidad','moneda','primera_fecha',
-                              'fecha','valor')
-  if(!is.null(pattern)){
-    lista_variables <- lista_variables[grep(pattern, lista_variables$descripcion, ignore.case = TRUE),]
-  return(lista_variables)
-  } else {
-    return(lista_variables)
+  limit <- 1000
+  offset <- 0
+  todos <- list()
+  
+  repeat {
+    url <- paste0('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias?limit=', limit, '&offset=', offset)
+    get <- httr::GET(url)
+    text <- rawToChar(get$content)
+    Encoding(text) <- "UTF-8"
+    parsed <- jsonlite::fromJSON(text)
+    
+    # Ajustá según la estructura real de la respuesta
+    df <- as.data.frame(parsed)[, c(1, 5:14)]
+    names(df) <- c('status','id_variable','descripcion','categoria','tipo_serie',
+                   'periodicidad','unidad','moneda','primera_fecha','fecha','valor')
+    
+    todos <- c(todos, list(df))
+    
+    if (nrow(df) < limit) break
+    
+    offset <- offset + limit
   }
+  
+  lista_variables <- do.call(rbind, todos)
+  
+  if (!is.null(pattern)) {
+    lista_variables <- lista_variables[grep(pattern, lista_variables$descripcion, ignore.case = TRUE), ]
+  }
+  
+  return(lista_variables)
 }
